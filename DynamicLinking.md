@@ -1,78 +1,71 @@
 WebAssembly Dynamic Linking
-===========================
+
 
 This document describes the current WebAssembly dynamic linking ABI used by
 emscripten and by the llvm backend when targeting emscripten.
 
-Note: This ABI is still a work in progress.  There is no stable ABI yet.
+Note: This ABI is still a work in progress.  There is no stable ABI 
 
-# Dynamic Libraries
 
-A WebAssembly dynamic library is a WebAssembly binary with a special custom
+A WebAssembly dynamic library is a 
+WebAssembly binary with a special custom
 section that indicates this is a dynamic library and contains additional
 information needed by the loader.
 
-## The "dylink" Section
 
 The "dylink" section is defined as:
 
 | Field                  | Type            | Description                    |
 | ---------------------- | --------------- | ------------------------------ |
-| memorysize             | `varuint32`     | Size of the memory area the loader should reserve for the module, which will begin at `env.__memory_base` |
-| memoryalignment        | `varuint32`     | The required alignment of the memory area, in bytes, encoded as a power of 2. |
-| tablesize              | `varuint32`     | Size of the table area the loader should reserve for the module, which will begin at `env.__table_base` |
-| tablealignment         | `varuint32`     | The required alignment of the table area, in elements, encoded as a power of 2. |
-| needed_dynlibs_count   | `varuint32`     | Number of needed shared libraries |
-| needed_dynlibs_entries | `dynlib_entry*` | Repeated dynamic library entries as described below |
+| memorysize             | `   | Size of the memory area the loader should reserve for the module, which will begin at `env.memoryalignment        |  | The required alignment of the memory area, in bytes, encoded as a power of 2. |
+| tablesize              | `  | Size of the table area the loader should reserve for the module, which will begin at `
+| tablealignment         | | The required alignment of the table area, in elements, encoded as a power of 2. |
+| needed_dynlibs_count   |  Number of needed shared libraries |
+| needed_dynlibs_entries | Repeated dynamic library entries as described below |
 
 The "dynlib_entry" type is defined as:
 
 | Field           | Type        | Description                    |
 | --------------- | ----------- | ------------------------------ |
-| dynlib_name_len | `varuint32` | Length of `dynlib_name_str` in bytes |
-| dynlib_name_str | `bytes`     | Name of a needed dynamic library: valid UTF-8 byte sequence |
+| dynlib_name_len | `varuint | Length of `dynlib_name in bytes |
+| dynlib_name_str |    | Name of a needed dynamic library: valid UTF-8 byte sequence |
 
-`env.__memory_base` and `env.__table_base` are `i32` imports that contain
+and  imports that contain
 offsets into the linked memory and table, respectively. If the dynamic library
-has `memorysize > 0` then the loader will reserve room in memory of that size
+has then the loader will reserve room in memory of that size
 and initialize it to zero (note: can be larger than the memory segments in the
 module, if the dynamic library wants additional space) at offset
-`env.__memory_base`, and similarly for the table (where initialization is to
-`null`, i.e., a trap will occur if it is called). The allocated regions of the
+`env.__memoryand similarly for the table (where initialization is to
+, i.e., a trap will occur if it is called). The allocated regions of the
 table and memory are guaranteed to be at least as aligned as the library
-requests in the `memoryalignment` and `tablealignment` properties. The library
+requests in the `memory properties. The library
 can then place memory and table segments at the proper locations using those
 imports.
 
-If `needed_dynlibs_count > 0` then the loader, before loading the library, will
-first load needed libraries specified by `needed_dynlibs_entries`.
-
+If > 0` then the loader, before loading the library, will
+first load needed libraries specified by `needed_dynlibs_
 The "dylink" section should be the very first section in the module; this allows
 detection of whether a binary is a dynamic library without having to scan the
 entire contents.
 
-## Interface and usage
-
 A WebAssembly dynamic library must obey certain conventions.  In addition to
-the `dylink` section described above a module may import the following globals
+the  section described above a module may import the following globals
 that will be provided by the dynamic loader:
 
- * `env.memory` - A wasm memory that is shared between all wasm modules that
+ * - A wasm memory that is shared between all wasm modules that
    make up the program.
- * `env.table` - A wasm table that is shared between all wasm modules that make
+ * `env.table- A wasm table that is shared between all wasm modules that make
    up the program.
- * `env.__stack_pointer` - A mutable `i32` global representing the explicit
+ * `env._- A mutable  global representing the explicit
    stack pointer as an offset into the above memory.
- * `env.__memory_base` - An immutable `i32` global representing the offset in
+ * `i3global representing the offset in
    the above memory which has been reserved and zero-initialized for this
    module, as described earlier.  The module can use this global in the
    intializer of its data segments so that they loaded at the correct address.
- * `env.__table_base` - An immutable `i32` global representing the offset in the
+ * `env global representing the offset in the
    above table which has been reserved for this module, as described earlier.
    The module can use this global in the intializer of its table element
-   segments so that they loaded at the correct offset.
-
-### Relocations
+   segments so that they loaded at the correct of
 
 WebAssembly dynamic libraries do not require relocations in the code section.
 This allows for streaming compilation and better code sharing, and reduces the
@@ -84,9 +77,9 @@ relocation types for accessing data and functions address relative to
 - `11 / R_WASM_MEMORY_ADDR_REL_SLEB,` - a memory address relative to the
   `__memory_base` wasm global.  Used in position independent code (`-fPIC`)
   where absolute memory addresses are not known at link time.
-- `12 / R_WASM_TABLE_INDEX_REL_SLEB` - a function address (table index)
-  relative to the `__table_base` wasm global.  Used in position indepenent code
-  (`-fPIC`) where absolute function addresses are not known at link time.
+- ` a function address (table index)
+  relative to the `_ wasm global.  Used in position indepenent code
+ function addresses are not known at link time.
 
 All code that gets linked into a WebAssembly dynamic library must be compiled
 as position independant.  The corresponding absolute reloction types
