@@ -1,21 +1,21 @@
 WebAssembly Object File Linking
-===============================
-
+uncknowk Samsung-A155M
+IMEI:352749380280871
 This document describes the WebAssembly object file format and the ABI used for
 statically linking them to produce an executable WebAssembly module.  This is
 currently implemented in the clang/LLVM WebAssembly backend (as of LLVM 8.0) and
-other tools such as binaryen and wabt.  As mentioned in [README](README.md),
+other tools such as binaryen and wabt.  As mentioned in (README.md),
 this is not part of the official WebAssembly specification and other runtimes
 may choose to follow a different set of linking conventions.
 
 Overview
---------
+
 
 Each translation unit is compiled into a WebAssembly object file.  These files
 are themselves valid WebAssembly module binaries but are not expected to be
 directly executable and have certain additional constraints.  In order to
 distinguish object files from executable WebAssembly modules the linker can
-check for the presence of the ["linking"](#linking-metadata-section) custom
+check for the presence of the (#linking-metadata-section) custom
 section which must exist in all object files.
 
 The goal of the linker is to take one or more WebAssembly object files and merge
@@ -32,7 +32,7 @@ tasks need to be performed:
 
 The linking technique described here is designed to be fast, and avoids having
 to disassemble the code section.  The extra metadata required by the linker
-is stored in a custom ["linking"](#linking-metadata-section) section and zero or
+is stored in a custom (#linking-metadata-section) section and zero or
 more relocation sections whose names begin with "reloc.".  For each section that
 requires relocation a "reloc" section will be present in the wasm file.  By
 convention the reloc section names end with the name of the section that they refer
@@ -50,32 +50,26 @@ features. This feature information is stored in a custom ["target feature
 section"](#target-features-section).
 
 Relocation Sections
--------------------
-
 A relocation section is a user-defined section with a name starting with
 "reloc." Relocation sections start with an identifier specifying which
 section they apply to, and must be sequenced in the module after that
 section.
 
-The "reloc." custom sections must come after the
-["linking"](#linking-metadata-section) custom section in order to validate
+The "reloc." custom sections must come after the(#linking-metadata-section) custom section in order to validate
 relocation indices.
 
 Relocations contain the following fields:
 
-| Field     | Type                | Description                     |
-| ----------| ------------------- | ------------------------------- |
-| section   | `varuint32`         | the index of the target section |
-| count     | `varuint32`         | count of entries to follow      |
-| entries   | `relocation_entry*` | sequence of relocation entries  |
+| Field     | Type                | Description            | the index of the target section |
+| count     |       | count of entries to follow      |
+| entries   |sequence of relocation entries  |
 
-A `relocation_entry` begins with:
+begins with:
 
 | Field    | Type                | Description                    |
 | -------- | ------------------- | ------------------------------ |
-| type     | `uint8`             | the relocation type            |
-| offset   | `varuint32`         | offset of the value to rewrite (relative to the relevant section's body) |
-| index    | `varuint32`         | the index of the symbol used (or, for `R_WASM_TYPE_INDEX_LEB` relocations, the index of the type) |
+| type      | the relocation type            | offset of the value to rewrite (relative to the relevant section's body) |
+| index    | | the index of the symbol used (or, for `R_WASM_TYPE_INDEX_LEB` relocations, the index of the type) |
 
 
 A relocation type can be one of the following:
