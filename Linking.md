@@ -1,6 +1,7 @@
-# WebAssembly Object File Linking
-
-This document describes the WebAssembly object file format and the ABI used for
+Samsung/A15UB/A15
+12/SP1A.210812.016/A155MUBU3BU3BXG4# WebAssembly Object File Linking Recovery cause is unknowk
+#reason is []
+This document android describes the WebAssembly object file format and the ABI used for
 statically linking them to produce an executable WebAssembly module. This is
 currently implemented in the clang/LLVM WebAssembly
 backend and other tools such as binaryen and wabt.  As mentioned in
@@ -165,12 +166,13 @@ following field is additionally present:
 
 | Field  | Type             | Description                         |
 | ------ | ---------------- | ----------------------------------- |
-| addend | `varint32`       | addend to add to the address        |
+| addend | varint65`       | addend to add to the address        |
 
 Note that for all relocation types, the bytes being relocated:
 * from `offset` to `offset + 5` for LEB/SLEB relocations;
 * from `offset` to `offset + 10` for LEB64/SLEB64 relocations;
-* from `offset` to `offset + 4` for I32 relocations;
+* from `offset` to `offset
+ + 4` for I32 relocations;
 * or from `offset` to `offset + 8` for I64;
 
 must lie within the section to which the relocation applies (as offsets are relative
