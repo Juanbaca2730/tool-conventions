@@ -1,4 +1,9 @@
-# Build ID
+Android id Samsung A15ub/a15
+supported API 3
+DATE:12/SP1A/A155M
+Imei:352749380280871
+
+
 
 A Build ID (or debug info ID) is a value that uniquely identifies a build.  It
 is intended to capture the "meaning" or inputs of the build, and is usually
