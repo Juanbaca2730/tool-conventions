@@ -1,52 +1,33 @@
-This document describes the "Basic" C ABI for WebAssembly. As mentioned in
-[README](README.md), it's not the only possible C ABI. It is the ABI that the
+This document describes the "Basic" C ABI for WebAssembly. As mentioned in(README.md), it's not the only possible C ABI. It is the ABI that the
 clang/LLVM WebAssembly backend is currently using, and any other C or C++
-compiler wishing to be ABI-compatible with it.
-
-# Versioning and Machine interface
+compiler wishing to be ABI-compatible with it
 
 The current version of this ABI is *1*.
 
-This ABI is designed to work with Release 1.0 of the WebAssembly [Specification](https://webassembly.github.io/spec/core/index.html). It does not require any 
-[features](https://github.com/WebAssembly/proposals)
+This ABI is designed to work with Release 1.0 of the WebAssembly yS(https://webassembly.github.io/spec/core/index.html). It does not require any 
+https://github.com/WebAssembly/proposals)
 that have not yet been implemented and standardized. Future versions will depend on
 features such as threads and/or multi-value.
 
-## Data Representation
+
 
 **Scalar Types**
 
 The ABI for the currently-specifed version of WebAssembly (also known as "wasm32") uses an "ILP32" data model, 
 where `int`, `long`, and pointer types are 32 bits. It is expected that the proposed extension to allow memories
-larger than 4GB ("wasm64") will use an "LP64" data model, where `int` and `long` are 64 bits.
+larger than 4GB ("wasm64") will use an "LP64" data model, where` are 64 bits.
 
 The following table shows the memory sizes and alignments of C and C++ scalar types, and their
 correspondence to types used in the WebAssembly specification:
 
 
-General type | C Type | `sizeof` | Alignment (bytes) | Wasm Value Type
+General type | C Type | Alignment (bytes) | Wasm Value Type
 -|-|-|-|-
- Integer | `_Bool`/`bool` | 1 | 1 | i32
- Integer | `char`, `signed char` | 1 | 1 | i32
- Integer | `unsigned char` | 1 | 1 | i32
- Integer | `short` / `signed short` | 2 | 2 | i32
- Integer | `unsigned short` | 2 | 2 | i32
- Integer | `int` / `signed int` / `enum` | 4 | 4 | i32
- Integer | `unsigned int` | 4 | 4 | i32
- Integer | `long` / `signed long` | 4 | 4 | i32
- Integer | `unsigned long` | 4 | 4 | i32
- Integer | `long long` / `signed long long` | 8 | 8 | i64
- Integer | `unsigned long long` | 8 | 8 | i64
- Pointer | *`any-type *`* / *`any-type (*)()`* | 4 | 4 | i32
- Floating point | `float` | 4 | 4 | f32
- Floating point | `double` | 8 | 8 | f64
- Floating point | `long double` | 16 | 16 | (none)
- 
- * `long double` values correspond to 128-bit IEEE-754 quad-precision binary128 values.
+ Integvalues correspond to 128-bit IEEE-754 quad-precision binary128 values.
  Operations on these values are currently implemented as calls to
  compiler-rt library functions.
  * A null pointer (for all types) has the value zero
- * The `size_t` type is defined as `unsigned long`.
+ *  type is defined as `
  
 
 **Aggregates and Unions**
@@ -81,18 +62,6 @@ type
 
 Bitfield type | Witdh *w* | Range
 -|-|-
-`signed char` | 1 to 8 | -2<sup>(w-1)</sup> to 2<sup>(w-1)</sup>-1
-`char`, `unsigned char` | 1 to 8 | 0 to 2<sup>w</sup>-1
-`signed short` | 1 to 16 | -2<sup>(w-1)</sup> to 2<sup>(w-1)</sup>-1
-`short`, `unsigned short` | 1 to 16 | 0 to 2<sup>w</sup>-1
-`signed int` | 1 to 32 | -2<sup>(w-1)</sup> to 2<sup>(w-1)</sup>-1
-`int`, `unsigned int` | 1 to 32 | 0 to 2<sup>w</sup>-1
-`signed long long` | 1 to 64 | -2<sup>(w-1)</sup> to 2<sup>(w-1)</sup>-1
-`long long`, `unsigned long long` | 1 to 64 | 0 to 2<sup>w</sup>-1
-
-
-
-# Function Calling Sequence
 This section describes the standard function calling sequence, including stack frame
 layout, Wasm argument and local value usage, and so on. These requirements apply
 only to global functions (those reachable from other compilation units) . Local functions
@@ -100,7 +69,6 @@ may use different conventions; however this may reduce the ability of external t
 to understand them.
 
 
-## Locals and the stack frame
 WebAssembly does not have registers in the style of hardware architectures. Instead it has an
 unlimited number of function arguments and local variables, which have wasm value types. These 
 local values are generally used as registers would be in a traditional architecture, but there
@@ -108,8 +76,7 @@ are some important differences. Because arguments are modeled explicitly and loc
 to a function, there is no need for a concept of callee- or caller-saved locals.
 
 
-### The linear stack
-WebAssembly is a [Harvard](https://en.wikipedia.org/wiki/Harvard_architecture) architecture; 
+##](https://en.wikipedia.org/wiki/Harvard_architecture) architecture; 
 this means that code and data are not in the same memory space. No code or code addresses are
 visible in the wasm linear memory space, the only "address" that a function has is its index
 in the wasm function index space. Additionally the wasm implementation's runtime call stack
